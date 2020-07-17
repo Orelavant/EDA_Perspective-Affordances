@@ -57,11 +57,17 @@ def cleanData(dataframe, type):
 avatarClean = cleanData(avatarRaw, "avatar")
 cylinderClean = cleanData(cylinderRaw, "cylinder")
 
-# Plot
-avatarBoxPlot = sns.boxplot(x=avatarClean['Response_Time'])
+# Plots
+
+# TODO: Compare ball rotation & response times across the two studies
+# Barplots of response time over ball rotation
+avatarBarPlot = sns.barplot(x=avatarClean['Ball_Rotation'], y=avatarClean['Response_Time']).set_title('Avatar: Ball Rotation & Response Time')
 plt.show()
-cylinderBoxPlot = sns.boxplot(x=cylinderClean['Response_Time'])
+cylinderBarPlot = sns.barplot(x=cylinderClean['Ball_Rotation'], y=cylinderClean['Response_Time']).set_title('Cylinder: Ball Rotation & Response Time')
 plt.show()
+
+# Barplots of response time over ball distance
+
 
 # Testing
 # print(avatarClean["Response_Time"].mean())
