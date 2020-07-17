@@ -5,6 +5,7 @@ import seaborn as sns
 from scipy import stats
 import matplotlib.pyplot as plt
 sns.set(color_codes=True)
+sns.set(style='ticks')
 
 # TODO: Implement qualtrics data
 # Push change
@@ -61,16 +62,16 @@ cylinderClean = cleanData(cylinderRaw, "cylinder")
 
 # TODO: Compare ball rotation & response times across the two studies
 # Barplots of response time over ball rotation
-# sns.catplot(x=avatarClean['Ball_Rotation'], y=avatarClean['Response_Time'], hue=avatarClean["Chair_Type"]).set_title('Avatar: Ball Rotation & Response Time')
+# sns.barplot(x=avatarClean['Ball_Rotation'], y=avatarClean["Response_Time"], hue=avatarClean['Chair_Type']).set_title('Avatar: Ball Rotation & Response Time')
 # plt.show()
-# sns.catplot(x=cylinderClean['Ball_Rotation'], y=cylinderClean['Response_Time'], hue=cylinderClean["Chair_Type"]).set_title('Cylinder: Ball Rotation & Response Time')
+# sns.barplot(x=cylinderClean['Ball_Rotation'], y=cylinderClean["Response_Time"], hue=cylinderClean['Chair_Type']).set_title('Cylinder: Ball Rotation & Response Time')
 # plt.show()
 
 # Barplots of response time over ball distance
-# sns.barplot(x=avatarClean['Ball_Distance'], y=avatarClean['Response_Time']).set_title('Avatar: Ball Distance & Response Time')
-# plt.show()
-# sns.barplot(x=cylinderClean['Ball_Distance'], y=cylinderClean['Response_Time']).set_title('Cylinder: Ball Distance & Response Time')
-# plt.show()
+sns.barplot(x=avatarClean['Ball_Distance'], y=avatarClean["Response_Time"], hue=avatarClean['Chair_Type']).set_title('Avatar: Ball Distance & Response Time')
+plt.show()
+sns.barplot(x=cylinderClean['Ball_Distance'], y=cylinderClean["Response_Time"], hue=cylinderClean['Chair_Type']).set_title('Cylinder: Ball Distance & Response Time')
+plt.show()
 
 
 # Testing
