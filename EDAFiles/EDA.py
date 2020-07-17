@@ -7,9 +7,6 @@ import matplotlib.pyplot as plt
 sns.set(color_codes=True)
 sns.set(style='ticks')
 
-# TODO: Implement qualtrics data
-# Push change
-
 # Read-in.
 avatarRaw = pd.read_csv("PT_Avatar_Raw.csv")
 cylinderRaw = pd.read_csv("PT_Cylinder_Raw.csv")
@@ -17,7 +14,7 @@ cylinderRaw = pd.read_csv("PT_Cylinder_Raw.csv")
 # Cleaning up data by removing participants
 # Shows rows with NaN: avatarRaw[avatarRaw["Response_Time"].isnull()]
 # Removing “Can’t Reach” trials, response times < 200 ms, and response times 3 SD above and below mean.
-# TODO: If slow, you can speed this up by specifying multiple drop conditions through one pass of the df
+# Type: avatar or cylinder
 def cleanData(dataframe, type):
     # Creating duplicate to preserve original
     cleanDF = dataframe
@@ -55,8 +52,10 @@ def cleanData(dataframe, type):
 
     return cleanDF
 
+# Assigning newDFs names
 avatarClean = cleanData(avatarRaw, "avatar")
 cylinderClean = cleanData(cylinderRaw, "cylinder")
+
 
 # Plots
 
@@ -68,11 +67,10 @@ cylinderClean = cleanData(cylinderRaw, "cylinder")
 # plt.show()
 
 # Barplots of response time over ball distance
-sns.barplot(x=avatarClean['Ball_Distance'], y=avatarClean["Response_Time"], hue=avatarClean['Chair_Type']).set_title('Avatar: Ball Distance & Response Time')
-plt.show()
-sns.barplot(x=cylinderClean['Ball_Distance'], y=cylinderClean["Response_Time"], hue=cylinderClean['Chair_Type']).set_title('Cylinder: Ball Distance & Response Time')
-plt.show()
-
+# sns.barplot(x=avatarClean['Ball_Distance'], y=avatarClean["Response_Time"], hue=avatarClean['Chair_Type']).set_title('Avatar: Ball Distance & Response Time')
+# plt.show()
+# sns.barplot(x=cylinderClean['Ball_Distance'], y=cylinderClean["Response_Time"], hue=cylinderClean['Chair_Type']).set_title('Cylinder: Ball Distance & Response Time')
+# plt.show()
 
 # Testing
 # print(avatarClean["Response_Time"].mean())
@@ -82,7 +80,34 @@ plt.show()
 # print(avatarClean.head(11))
 
 
+# Qualtrics Data
 
+# Read-in
+avatarQual = pd.read_csv("PT Qualtrics Data Avatar.csv")
+cylinderQual = pd.read_csv("PT Qualtrics Data Cylinder.csv")
 
+# Clean-up
+avatarQual.drop(avatarQual.index[4], inplace=True)
+
+# Combining qualtrics answers with response times from the dfs above
+# Labels: [Participant #, Arm_Length, Gender, Strategy_Change?, Avg Response Time]
+def combineDF(qualtricsDF, dataDF):
+    # Create a new dataframe with select columns from qualtrics csv
+    newDF = qualtricsDF[['Please have the experimenter enter your participant number.',
+                         'Please have the participant enter your arm length.',
+                         'Please select the gender that you best identify with.',
+                         'Did your strategy for completing the task change when the cylinder was present?']].copy()
+
+    # Rename the column names
+    newDF.columns = ['Participant_Number', 'Arm_Length', 'Gender', 'Strategy_Change']
+
+    # Add avg response time to each participant from their data csv
+
+    return newDF
+
+# Assigning newDFs names
+avatarCombined = combineDF(avatarQual, avatarClean)
+cylinderCombined = combineDF(cylinderQual, cylinderClean)
+print(avatarCombined.head(5))
 
 
