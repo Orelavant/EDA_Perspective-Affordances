@@ -101,7 +101,7 @@ def combineDF(qualtricsDF, dataDF):
     # Rename the column names
     newDF.columns = ['Participant_Number', 'Arm_Length', 'Gender', 'Strategy_Change']
 
-    # Add avg response time to each participant from their data csv
+    # TODO: Add avg response time to each participant from their data csv
 
     return newDF
 
