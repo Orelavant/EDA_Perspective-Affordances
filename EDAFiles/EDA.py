@@ -19,15 +19,16 @@ def cleanData(dataframe, type):
     # Creating duplicate to preserve original
     cleanDF = dataframe
 
-    # If type avatar, drop participant 9 and 17, and other specifics.
+    # If type avatar, drop participant 9, 17, 23 and other specifics.
     if type == "avatar":
         cleanDF.drop(cleanDF[cleanDF["Participant"] == 9].index, inplace=True)
         cleanDF.drop(cleanDF[cleanDF["Participant"] == 17].index, inplace=True)
         cleanDF.drop(columns=["Acc_dc"], inplace=True)
 
-    # If type cylinder, drop specifics.
+    # If type cylinder, drop specifics and participant 23 (incorrect arm length measurement)
     if type == "cylinder":
         cleanDF.drop(columns=["%CanReach", "Accuracy_dc"], inplace=True)
+        cleanDF.drop(cleanDF[cleanDF["Participant"] == 23].index, inplace=True)
 
     # Remove any NaNs
     cleanDF.dropna(inplace=True)
@@ -135,8 +136,21 @@ cylinderCombined = combineDF(cylinderQual, cylinderClean)
 
 # Plots
 
-# sns.barplot(x=avatarCombined['Arm_Length'], y=avatarClean["Response_Time"], hue=avatarClean['Chair_Type']).set_title('Avatar: Ball Rotation & Response Time')
-# plt.show()
+# Lineplot of arm length over average response time
+sns.lineplot(x=avatarCombined['Arm_Length'], y=avatarCombined["Avg_Response_Time"]).set_title('Avatar: Arm Length & Average Response Time')
+plt.show()
+sns.lineplot(x=cylinderCombined['Arm_Length'], y=cylinderCombined["Avg_Response_Time"]).set_title('Cylinder: Arm Length & Average Response Time')
+plt.show()
+
+# Barplot of strategy change over average response time
+sns.barplot(x=avatarCombined['Strategy_Change'], y=avatarCombined["Avg_Response_Time"]).set_title('Avatar: Strategy Change & Average Response Time')
+plt.show()
+sns.barplot(x=cylinderCombined['Strategy_Change'], y=cylinderCombined["Avg_Response_Time"]).set_title('Cylinder: Strategy Change & Average Response Time')
+plt.show()
+
+# Barplot of gender over average response time
+sns.barplot(x=cylinderCombined['Gender'], y=cylinderCombined["Avg_Response_Time"]).set_title('Cylinder: Gender & Average Response Time')
+plt.show()
 
 # Tests
 # print(avatarCombined.head(10))
