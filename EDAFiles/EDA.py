@@ -19,9 +19,10 @@ def cleanData(dataframe, type):
     # Creating duplicate to preserve original
     cleanDF = dataframe
 
-    # If type avatar, drop participant 9, and other specifics.
+    # If type avatar, drop participant 9 and 17, and other specifics.
     if type == "avatar":
         cleanDF.drop(cleanDF[cleanDF["Participant"] == 9].index, inplace=True)
+        cleanDF.drop(cleanDF[cleanDF["Participant"] == 17].index, inplace=True)
         cleanDF.drop(columns=["Acc_dc"], inplace=True)
 
     # If type cylinder, drop specifics.
@@ -86,7 +87,7 @@ cylinderClean = cleanData(cylinderRaw, "cylinder")
 avatarQual = pd.read_csv("PT Qualtrics Data Avatar.csv")
 cylinderQual = pd.read_csv("PT Qualtrics Data Cylinder.csv")
 
-# Clean-up
+# Clean-up. Dropping participant 5 (index 4) due to errors in measurement
 avatarQual.drop(avatarQual.index[4], inplace=True)
 
 # Combining qualtrics answers with response times from the dfs above
@@ -108,21 +109,40 @@ def combineDF(qualtricsDF, dataDF):
     newDF = newDF[newDF['Participant'].isin(participants)]
 
     # Get avg response time of each participant from dataDF
-    currNum = 0
+    currNum = dataDF['Participant'].iloc[0]
     start = 0
-    last = 0
     avgTime = []
-    # TODO: iterate through dataDF and every time new participant # is hit, avg from start to last
-
+    for index, row in dataDF.iterrows():
+        # Once a new participant number comes up, calculate the avg of the last participant
+        # Then change tracking for new participant.
+        if row['Participant'] != currNum:
+            end = index-1
+            avgTime.append(dataDF['Response_Time'][start:end].mean())
+            currNum = row['Participant']
+            start = index
+    # Repeat for end
+    end = len(dataDF.index)-1
+    avgTime.append(dataDF['Response_Time'][start:end].mean())
 
     # Add avg response time to each participant from their dataDF
-    #newDF['Avg_Response_Time'] = dataDF['']
+    newDF['Avg_Response_Time'] = avgTime
 
     return newDF
 
 # Assigning newDFs names
 avatarCombined = combineDF(avatarQual, avatarClean)
 cylinderCombined = combineDF(cylinderQual, cylinderClean)
-print(cylinderCombined.head(10))
+
+# Plots
+
+# sns.barplot(x=avatarCombined['Arm_Length'], y=avatarClean["Response_Time"], hue=avatarClean['Chair_Type']).set_title('Avatar: Ball Rotation & Response Time')
+# plt.show()
+
+# Tests
+# print(avatarCombined.head(10))
+# print(cylinderCombined.head(10))
+# print(len(avatarCombined.index))
+# print(avatarCombined['Participant'])
+# print(len(cylinderCombined.index))
 
 
