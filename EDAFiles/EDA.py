@@ -99,15 +99,30 @@ def combineDF(qualtricsDF, dataDF):
                          'Did your strategy for completing the task change when the cylinder was present?']].copy()
 
     # Rename the column names
-    newDF.columns = ['Participant_Number', 'Arm_Length', 'Gender', 'Strategy_Change']
+    newDF.columns = ['Participant', 'Arm_Length', 'Gender', 'Strategy_Change']
 
-    # TODO: Add avg response time to each participant from their data csv
+    # Get set of participants from dataDF
+    participants = dataDF['Participant'].unique()
+
+    # Filter out qualtrics participants that aren't in the dataDF
+    newDF = newDF[newDF['Participant'].isin(participants)]
+
+    # Get avg response time of each participant from dataDF
+    currNum = 0
+    start = 0
+    last = 0
+    avgTime = []
+    # TODO: iterate through dataDF and every time new participant # is hit, avg from start to last
+
+
+    # Add avg response time to each participant from their dataDF
+    #newDF['Avg_Response_Time'] = dataDF['']
 
     return newDF
 
 # Assigning newDFs names
 avatarCombined = combineDF(avatarQual, avatarClean)
 cylinderCombined = combineDF(cylinderQual, cylinderClean)
-print(avatarCombined.head(5))
+print(cylinderCombined.head(10))
 
 
